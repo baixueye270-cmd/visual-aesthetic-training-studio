@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>视觉拆解训练室</title>
+<style>
+:root{--ink:#38253e;--muted:#806c7c;--paper:#fffdfa;--line:#efdcd3;--orange:#ed6c20;--coral:#dc4f5b;--green:#238b69;--blue:#5574dc;--purple:#7051b7;--shadow:0 15px 42px rgba(106,45,25,.12)}
+*{box-sizing:border-box}
+body{margin:0;background:#fff8f3;color:var(--ink);font:16px/1.55 "PingFang SC","Microsoft YaHei",system-ui,sans-serif}
+button,input,textarea{font:inherit}
+button{cursor:pointer;border:0}
+.app{display:grid;grid-template-columns:258px 1fr;min-height:100vh}
+.side{position:sticky;top:0;height:100vh;padding:27px 17px;color:#fff;background:linear-gradient(165deg,#623f7c,#d75b3c 55%,#f58b34)}
+.brand{display:flex;gap:11px;align-items:center;margin:0 8px 34px}
+.mark{width:40px;height:40px;border-radius:14px;background:#fff7e4;color:#e76225;display:grid;place-items:center;font-size:22px}
+.brand h1{font-size:17px;margin:0}
+.brand p{font-size:12px;margin:1px 0;color:#fff2e5}
+.navlabel{margin:18px 10px 7px;color:#ffe9d3;font-size:11px;letter-spacing:.15em}
+.nav button{display:block;width:100%;padding:12px;border-radius:10px;background:transparent;color:#fff;text-align:left;margin:3px 0}
+.nav button:hover,.nav .on{background:#fff3}
+.nav b{display:inline-grid;place-items:center;width:25px;height:25px;margin-right:9px;border-radius:8px;background:#fff2}
+.sidefoot{position:absolute;bottom:25px;left:27px;right:27px;border-top:1px solid #fff5;padding-top:15px;color:#fff0e5;font-size:12px}
+.main{width:100%;max-width:1560px;margin:auto;padding:38px clamp(22px,5vw,72px) 68px}
+.top{display:flex;justify-content:space-between;gap:22px;margin-bottom:26px}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.15em;color:#e46324}
+.top h2{font-size:32px;line-height:1.25;margin:5px 0;letter-spacing:-.04em}
+.top p{max-width:700px;margin:0;color:var(--muted)}
+.counter{min-width:210px;padding:15px 17px;border:1px solid #f5d9c8;border-radius:16px;background:#fff;box-shadow:var(--shadow)}
+.counter small{color:var(--muted)}
+.counter strong{display:block;font-size:22px;color:#da5c2b}
+.bar{height:8px;margin-top:8px;background:#ffe4ce;border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#ffd15b,#ed6c20);transition:.3s}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}
+.homegrid,.workspace{display:grid;grid-template-columns:1.15fr .85fr;gap:20px}
+.start,.guide,.history,.quiz,.notebook,.archive{padding:28px}
+.start h3,.guide h3,.history h3{margin:0;font-size:20px}
+.start>p,.guide p{margin:7px 0 21px;color:var(--muted)}
+.modes{display:grid;gap:11px}
+.mode{display:flex;gap:13px;padding:15px;text-align:left;border:1px solid #f2d4c3;border-radius:14px;background:#fffaf6;transition:.2s}
+.mode:hover{border-color:#ef7929;transform:translateY(-2px);box-shadow:0 7px 16px #eb702522}
+.micon{display:grid;place-items:center;flex:none;width:43px;height:43px;border-radius:13px;background:linear-gradient(140deg,#ffd36c,#ff8755);font-size:21px}
+.mode strong{display:block}
+.mode span span{display:block;margin-top:3px;color:var(--muted);font-size:13px}
+.guide{background:linear-gradient(145deg,#fffdf9,#fff0e2)}
+.guide ol{margin:15px 0 0;padding:0;list-style:none;counter-reset:x}
+.guide li{display:flex;gap:11px;margin:13px 0;color:#705c69;font-size:14px}
+.guide li:before{counter-increment:x;content:counter(x);display:grid;place-items:center;flex:none;width:25px;height:25px;border-radius:50%;background:#ffb458;color:#fff;font-size:12px;font-weight:bold}
+.history{margin-top:20px}
+.historyhead,.paneltop,.reviewtop,.notebar{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.textbtn{background:transparent;color:#d45c29;font-size:13px}
+.empty{padding:26px;text-align:center;color:var(--muted)}
+.record{display:grid;grid-template-columns:1fr auto;gap:12px;padding:14px 0;border-bottom:1px dashed #ead6cf}
+.record:last-child{border:0}
+.record b{display:block}
+.record span{font-size:13px;color:var(--muted)}
+.record button{padding:6px 9px;border-radius:8px;background:#fff0e7;color:#ce5727;font-size:12px}
+.photo{position:sticky;top:23px;padding:17px;height:max-content}
+.change{padding:7px 10px;border-radius:8px;background:#fff0e7;color:#d65c27;font-size:12px}
+.drop{display:grid;min-height:490px;place-items:center;border:2px dashed #f2ad7d;border-radius:15px;overflow:hidden;background:linear-gradient(135deg,#fff8ed,#ffefe5);transition:.2s}
+.drop.drag{border-color:#e85c1f;background:#ffe8d6;transform:scale(1.01)}
+.drop img{display:block;max-width:100%;max-height:70vh}
+.dropcopy{text-align:center;color:#896871}
+.dropcopy div{font-size:38px}
+.dropcopy b{display:block;margin:4px 0;color:#6a4654}
+.dropcopy small{font-size:12px}
+.select{display:inline-block;margin-top:15px;padding:9px 13px;border-radius:9px;background:linear-gradient(135deg,#ed6725,#ff9d43);color:#fff;font-size:13px}
+.select input{display:none}
+.crumb{color:#e36622;font-size:12px;font-weight:800;letter-spacing:.08em}
+.quiz h3{margin:6px 0;font-size:26px}
+.hint{margin:0 0 18px;color:#7b6877;font-size:14px}
+.steps{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:19px;padding-bottom:17px;border-bottom:1px solid #f0ded7}
+.step{padding:6px 9px;border-radius:20px;background:#faedeb;color:#a08b93;font-size:12px}
+.step.on{background:#e96a2e;color:#fff}
+.reminder{margin-bottom:17px;padding:12px 14px;border-left:4px solid #ff9a3c;background:#fff4e9;color:#795d63;font-size:13px}
+.reminder b{color:#db6227}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.field{display:grid;gap:5px}
+.field.full{grid-column:1/-1}
+.field label{font-size:13px;font-weight:700;color:#684e5a}
+.field input,.field textarea{width:100%;padding:10px 11px;border:1px solid #ead5cf;border-radius:9px;outline:0;color:var(--ink);background:#fff}
+.field textarea{min-height:76px;resize:vertical}
+.field input:focus,.field textarea:focus{border-color:#f1772c;box-shadow:0 0 0 3px #f1772c1c}
+.actions{display:flex;align-items:center;gap:12px;margin-top:18px}
+.submit{padding:11px 17px;border-radius:10px;color:#fff;background:linear-gradient(135deg,#e95b2b,#fa9b3f);font-weight:800;box-shadow:0 5px 12px #e5592026}
+.enterhint{margin-left:auto;color:#a18486;font-size:12px}
+.result{margin-top:20px;overflow:hidden;border:1px solid #f1d6c8;border-radius:14px}
+.resulthead{display:flex;align-items:center;gap:12px;padding:14px 16px;background:#fff4eb}
+.resulthead b{font-size:17px}
+.badge{margin-left:auto;padding:5px 9px;border-radius:99px;background:#a3878b;color:#fff;font-size:12px}
+.feedback{padding:16px;background:#fff}
+.feedback p{margin:0 0 12px;color:#725e69;font-size:14px}
+.lights{display:flex;gap:8px}
+.light{padding:8px 10px;border-radius:9px;font-size:13px;font-weight:700}
+.green{background:#e5f7ef;color:#278260}
+.yellow{background:#fff5dc;color:#ad7c10}
+.red{background:#ffeaeb;color:#c44a57}
+.aifeedback{margin-top:12px;padding:13px;border-left:4px solid #7657b8;border-radius:10px;background:#f4f0ff;color:#5d4c70;font-size:14px;white-space:pre-line}
+.aifeedback b{color:#60419b}.aifeedback.loading{color:#7657b8;background:#faf7ff}
+.questionbox{margin-top:16px;padding-top:16px;border-top:1px dashed #ead7d0}
+.ask{margin-top:8px;padding:8px 11px;border-radius:8px;background:#7051b7;color:#fff;font-size:13px}.ask:disabled,.submit:disabled{cursor:wait;opacity:.72}.answerbox{margin-top:10px;padding:11px 12px;border-left:4px solid #7051b7;border-radius:9px;background:#f5f1ff;color:#554269;font-size:14px;white-space:pre-line}.answerbox b{color:#60419b}
+.notebook,.archive{max-width:1050px}
+.notebook h3,.reviewtop h3{margin:5px 0;font-size:27px}
+.notebook>p,.reviewtop p{margin:0;color:var(--muted)}
+.notegrid{display:grid;grid-template-columns:1fr 1fr;gap:17px;margin-top:21px}
+.note{padding:19px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.note h4{margin:0 0 9px}
+.note p{margin:0;color:#765f6a;font-size:14px;white-space:pre-line}
+.note.orange{background:#fff0e2}
+.note.purple{background:#f2eeff}
+.meta-review{margin-top:22px;padding:20px;border:1px solid #ead5ff;border-radius:16px;background:linear-gradient(135deg,#fbf8ff,#fff6f1)}.meta-review h4{margin:0 0 5px;font-size:20px}.meta-review>p{margin:0;color:#705d76;font-size:14px}.meta-list{display:grid;gap:12px;margin-top:15px}.meta-card{padding:15px;border:1px solid #e5d7f5;border-radius:12px;background:#fff}.meta-card h5{margin:0 0 8px;color:#65438b;font-size:15px}.meta-card p{margin:7px 0;color:#634f5d;font-size:14px;white-space:pre-line}.meta-card b{color:#d45c29}.meta-loading{padding:14px;border-radius:10px;background:#f3ecff;color:#654c82;font-size:14px}
+.notebar{margin-top:17px;padding:14px;border-radius:11px;background:#fff3e8}
+.notebar button{padding:8px 11px;border-radius:8px;background:#e7692b;color:#fff;font-size:13px}
+.original{margin:20px 0;overflow:hidden;border:1px solid var(--line);border-radius:16px;background:#fff6ef}
+.original b{display:block;padding:10px 14px;font-size:13px}
+.original img{display:block;max-width:100%;max-height:520px;margin:auto}
+.summary{padding:17px 0;border-top:1px solid #eedcd5}
+.summary h4{margin:0 0 9px;color:#dd6129}
+.mine{color:#382639;white-space:pre-line}
+.ai{margin-top:10px;padding:10px 12px;border-left:3px solid #e45851;background:#fff1f0;color:#b64348;white-space:pre-line;font-size:14px}
+.questionnote{margin-top:9px;padding:9px;border-radius:8px;background:#f3eeff;color:#654e80;font-size:13px}
+.hidden{display:none!important}
+@media(max-width:950px){.app{display:block}
+.side{position:static;height:auto;padding:16px}
+.brand{margin:0}
+.nav,.sidefoot{display:none}
+.main{padding:26px 18px}
+.top{display:block}
+.counter{display:inline-block;margin-top:16px}
+.homegrid,.workspace{grid-template-columns:1fr}
+.photo{position:static}
+.drop{min-height:280px}
+}
+@media(max-width:540px){.fields,.notegrid{grid-template-columns:1fr}
+.field.full{grid-column:auto}
+.quiz,.start,.guide,.history,.notebook,.archive{padding:20px}
+.top h2{font-size:27px}
+.enterhint{display:none}
+}
+
+</style>
+<style>
+.crop-panel{display:grid;gap:10px;padding-top:12px}.crop-panel p{margin:0;color:#806c7c;font-size:13px}.crop-canvas{display:block;width:100%;max-height:62vh;border-radius:12px;background:#342d37;touch-action:none;cursor:crosshair}.crop-actions{display:flex;gap:9px}.crop-actions button{padding:8px 11px;border-radius:8px;background:#7051b7;color:#fff;font-size:13px}.crop-actions .crop-cancel{background:#fff0e7;color:#c95829}.photo-tools{display:flex;gap:7px}.photo-tools .change{white-space:nowrap}.crop-hint{margin:8px 0 0;color:#8d747d;font-size:12px}.crop-ready{outline:2px solid #7051b7}
+.mode.sprint{border-color:#8bd7de;background:linear-gradient(135deg,#edfdfd,#e9f7ff)}.mode.sprint .micon{background:linear-gradient(140deg,#46c7c6,#4f9fe5)}.mode.sprint:hover{border-color:#209fa7;box-shadow:0 7px 16px #249aa526}.sprint-timer{margin-top:10px;padding:9px 11px;border:1px solid #8cdadd;border-radius:12px;background:#edffff;color:#176c74}.sprint-timer span{display:block;font-size:12px}.sprint-timer b{display:block;font-size:25px;line-height:1.1;letter-spacing:.04em}.sprint-active .quiz{border-color:#a8e1e3;box-shadow:0 15px 42px rgba(32,159,167,.14)}.sprint-active .eyebrow{color:#168e96}.sprint-active .step.on{background:#249ea7}.sprint-active .reminder{border-left-color:#30b9bd;background:#edffff}.sprint-active .submit{background:linear-gradient(135deg,#159fa6,#4b9fe0);box-shadow:0 5px 12px #199da626}.sprint-active .aifeedback{border-left-color:#249ea7;background:#eefbfc;color:#275f66}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+<div class="brand">
+<div class="mark">✦</div>
+<div>
+<h1>视觉拆解训练室</h1>
+<p>把审美，练成判断力</p>
+</div>
+</div>
+<nav class="nav">
+<div class="navlabel">TRAIN</div>
+<button class="on" data-go="home">
+<b>⌂</b>训练首页</button>
+<button data-go="notes">
+<b>✎</b>我的笔记本</button>
+<div class="navlabel">REVIEW</div>
+<button data-go="records">
+<b>◷</b>训练档案</button>
+</nav>
+<div class="sidefoot">按 Enter：交卷并看反馈<br>按 Shift + Enter：长文本换行</div>
+</aside>
+<main class="main">
+<section id="home">
+<header class="top">
+<div>
+<div class="eyebrow">VISUAL TASTE PRACTICE</div>
+<h2>先判断，再让 GPT 和你一起把图看透</h2>
+<p>每一题都像填写一张拆解卡：把你看见的具体信息写下来。提交后，GPT 会结合原图、你的作答和电商转化逻辑给出可核对的参考解析；你的追问也会得到具体答复。</p>
+</div>
+<div class="counter">
+<small>已累计完成</small>
+<strong id="total">0 题</strong>
+<div class="bar">
+<i id="totalbar">
+</i>
+</div>
+</div>
+</header>
+<div class="homegrid">
+<article class="card start">
+<h3>开始一次训练</h3>
+<p>选择图像类型；上传后，把信息一项项填出来。</p>
+<div class="modes">
+<button class="mode" data-mode="hero">
+<span class="micon">✦</span>
+<span>
+<strong>主图第 1 张</strong>
+<span>3 秒注意力、唯一卖点和点击动机</span>
+</span>
+</button>
+<button class="mode" data-mode="detail">
+<span class="micon">▤</span>
+<span>
+<strong>详情页整体</strong>
+<span>从首屏到收尾的叙事节奏与转化链路</span>
+</span>
+</button>
+<button class="mode" data-mode="screen">
+<span class="micon">⌕</span>
+<span>
+<strong>详情页单屏</strong>
+<span>一个卖点如何被完整地讲透、看见、相信</span>
+</span>
+</button>
+<button class="mode" data-mode="shop">
+<span class="micon">⌂</span>
+<span>
+<strong>店铺首页</strong>
+<span>从主 KV、分类到商品路径，拆解整家店如何让人逛下去</span>
+</span>
+</button>
+<button class="mode" data-mode="kv">
+<span class="micon">▰</span>
+<span>
+<strong>店铺主 KV</strong>
+<span>从整页截图裁切首屏主视觉，专项拆解主题与导购力</span>
+</span>
+</button>
+<button class="mode sprint" data-mode="sprint">
+<span class="micon">10</span>
+<span>
+<strong>10 分钟极速拆解</strong>
+<span>只写三行：亮点、扣分点、第一刀怎么改</span>
+</span>
+</button>
+</div>
+</article>
+<article class="card guide">
+<h3>这次更像做题，而不是写作文</h3>
+<ol>
+<li>图片直接拖进左侧虚线框；原图随训练档案保留。</li>
+<li>每一小项都有独立输入框，减少临时组织句子的负担。</li>
+<li>按 Enter 交卷，自动出现评分、参考解析和追问区。</li>
+<li>收尾时把经验沉淀到笔记本，下一次做图直接翻出来用。</li>
+</ol>
+</article>
+</div>
+<article class="card history">
+<div class="historyhead">
+<h3>最近的训练档案</h3>
+<button class="textbtn" id="clear">清空本机记录</button>
+</div>
+<div id="history">
+</div>
+</article>
+</section>
+<section id="train" class="hidden">
+<header class="top">
+<div>
+<div class="eyebrow" id="modeName">
+</div>
+<h2 id="trainTitle">
+</h2>
+<p id="trainDesc">
+</p>
+</div>
+<div class="counter">
+<small>本轮进度</small>
+<strong id="round">1 / 6</strong>
+<div class="bar">
+<i id="roundbar">
+</i>
+</div>
+<div class="sprint-timer hidden" id="sprintTimer"><span>10 分钟极速拆解</span><b id="sprintClock">10:00</b></div>
+</div>
+</header>
+<div class="workspace">
+<aside class="card photo">
+<div class="paneltop">
+<b>训练原图</b>
+<div class="photo-tools"><button class="change" id="crop" disabled>裁切截图</button><button class="change" id="change">更换图片</button></div>
+</div>
+<div class="drop" id="drop">
+</div>
+<div class="crop-panel hidden" id="cropPanel">
+<p>在截图上拖拽框选需要分析的区域。主 KV 建议只保留首屏主视觉与紧邻的必要信息。</p>
+<canvas class="crop-canvas" id="cropCanvas"></canvas>
+<div class="crop-actions"><button id="useCrop">使用这块裁切图</button><button class="crop-cancel" id="cancelCrop">返回原截图</button></div>
+</div>
+</aside>
+<article class="card quiz">
+<div class="crumb" id="crumb">
+</div>
+<h3 id="qtitle">
+</h3>
+<p class="hint" id="qhint">
+</p>
+<div class="steps" id="steps">
+</div>
+<div class="reminder">
+<b>本题提醒：</b>
+<span id="remind">
+</span>
+</div>
+<div class="fields" id="fields">
+</div>
+<div class="actions">
+<button class="submit" id="submit">提交本题并获得反馈</button>
+<span class="enterhint">输入完成后按 Enter 也可提交</span>
+</div>
+<section class="result hidden" id="result">
+<div class="resulthead">
+<b>本题反馈</b>
+<span class="badge" id="badge">GPT 正在分析</span>
+</div>
+<div class="feedback">
+<p id="scoretext">
+</p>
+<div class="lights" id="lights">
+</div>
+<div class="aifeedback" id="aifeedback">
+</div>
+<div class="questionbox">
+<label class="field">
+<span>还有什么疑问？GPT 会结合这张原图和本题内容回答</span>
+<textarea id="freeq" placeholder="例如：为什么这里不用场景图也能让人信服？">
+</textarea>
+</label>
+<button class="ask" id="next">提问并保存，然后进入下一题</button>
+<div class="answerbox hidden" id="questionAnswer"></div>
+</div>
+</div>
+</section>
+</article>
+</div>
+</section>
+<section id="complete" class="hidden">
+<article class="card notebook">
+<div class="eyebrow">TRAINING COMPLETE</div>
+<h3>这一轮已经收进你的视觉笔记本</h3>
+<p id="completeText">
+</p>
+<div class="notegrid">
+<article class="note orange">
+<h4>本次最值得复用</h4>
+<p id="reuse">
+</p>
+</article>
+<article class="note purple">
+<h4>下一次做图前先提醒自己</h4>
+<p id="nexttip">
+</p>
+</article>
+</div>
+<section class="meta-review">
+<h4>拆解盲区复盘</h4>
+<p>不是挑错，而是定位最值得优先补齐的观察视角。保留你的原回答，再解释为什么它会限制判断。</p>
+<div class="meta-list" id="metaReview"><div class="meta-loading">完成本轮后，GPT 会从整套作答中挑出 3 个最值得整改的部分。</div></div>
+</section>
+<div class="notebar">
+<span>原图、你的填写、反馈与疑问已生成完整训练页。</span>
+<button id="latest">查看本次总结页</button>
+</div>
+<div class="actions">
+<button class="submit" id="again">再练一轮</button>
+<button class="textbtn" id="gohome">返回首页</button>
+</div>
+</article>
+</section>
+<section id="notes" class="hidden">
+<article class="card notebook">
+<div class="eyebrow">MY NOTEBOOK</div>
+<h3>可复用的视觉经验</h3>
+<p>完成训练后，重点经验和你留下的疑问会自动沉淀在这里。它不是流水账，而是下一次设计时可以直接照做的动作。</p>
+<div class="notegrid" id="notelist">
+</div>
+</article>
+</section>
+<section id="review" class="hidden">
+<article class="card archive" id="archive">
+</article>
+</section>
+</main>
+</div>
+<script>
+const F=(a,b='',full=false)=>[a,b,full];
+const hero=[
+ ['基本信息','先把它放进具体的消费语境里。',[F('品牌/店铺','例如：儿童益智玩具店'),F('产品类型','例如：磁力安静书'),F('目标人群','例如：3–6 岁孩子的家长'),F('使用场景','例如：出行安静陪玩'),F('页面风格定位','例如：明亮、童趣、轻松'),F('我第一眼看到的东西','不要只写产品名称，描述大小/位置/颜色',true)]],
+ ['整体框架','先还原画面秩序。',[F('主体物','它是什么，放在画面哪里'),F('核心文案','原文/大意；若没有写“无”'),F('信任元素','Logo、数据、认证、销量等'),F('视觉动线','先看到 → 再看到 → 最后看到'),F('主体占画面比例','约多少；是否足够聚焦'),F('画面最空的区域','它留给了什么信息',true)]],
+ ['卖点逻辑','只找一个最强点击理由。',[F('唯一核心卖点','用用户语言写，不是堆参数'),F('画面怎样证明它','物体、动作、特写、对比等'),F('辅助卖点/情绪','它在增加什么感受'),F('用户点击的即时利益','为什么现在要点进去'),F('最可能被忽略的信息','它是否影响理解'),F('我会删掉的一项信息','如果只能减一项',true)]],
+ ['视觉表现','把“显眼”拆成具体动作。',[F('主体物清晰度/质感','边缘、光影、材质、距离'),F('主色与点缀色','颜色如何服务吸引力'),F('对比来源','大小/明暗/冷暖/饱和度'),F('文案层级','标题、说明、数据谁最先读'),F('构图方式','左右、居中、对角、留白'),F('我感到最有效的一处视觉设计','指出具体位置和原因',true)]],
+ ['转化思维','好看必须转成“我愿意点”。',[F('CTR 导向','它要促使用户做什么'),F('差异化定位','与同类相比有什么记忆点'),F('品牌信任如何出现','小而稳，还是喧宾夺主'),F('点击后的期待','用户会想进去看什么'),F('转化链路是否有断点','哪里看不懂/不想点'),F('如果我来优化','只给一条最重要的修改动作',true)]],
+ ['我的收获','只记录以后能直接照做的东西。',[F('值得借鉴','一个具体做法'),F('我能用到自己的设计','写成“下次我会……”'),F('需要避免','一个明确风险'),F('我的一句设计规则','例如：首图只放一个点击理由'),F('下次要验证的点','需要找案例/练习的方向',true)]]];
+const detail=[
+ ['基本信息','建立整页判断坐标。',[F('品牌/店铺'),F('产品类别'),F('目标人群/价格带'),F('页面总屏数','大约即可'),F('首屏最想传达什么'),F('整页给人的第一气质','例如专业/生活化/童趣',true)]],
+ ['整体框架','把页面结构写成一条叙事线。',[F('开头如何吸睛'),F('中段怎样强化核心卖点'),F('功能/材质怎样证明'),F('场景/人群如何代入'),F('信任背书在哪里出现'),F('从上到下的模块顺序','用“→”串起来',true)]],
+ ['卖点逻辑','找出真正被反复证明的 1–3 个卖点。',[F('核心卖点 1'),F('核心卖点 2（可选）'),F('功能卖点'),F('情感卖点'),F('技术如何翻译成用户语言'),F('最完整的一条卖点证据链','卖点 → 证据 → 用户感受',true)]],
+ ['视觉表现','判断页面如何让人看懂并看下去。',[F('主色/辅助色'),F('文字层级'),F('对比图承担什么'),F('场景图承担什么'),F('细节/结构图承担什么'),F('图片与排版的节奏','哪里快、哪里慢，是否有呼吸',true)]],
+ ['转化思维','看每一屏怎样把人送到下一屏。',[F('上一屏提出什么问题'),F('下一屏怎样回答'),F('中途如何消除顾虑'),F('最后怎样促单'),F('最有说服力的信任证据'),F('我认为的断点/冗余','说明屏幕位置和原因',true)]],
+ ['我的收获','形成自己的详情页结构库。',[F('最可借鉴的结构'),F('可复用的证据方式'),F('下一次我会怎样安排一屏'),F('需要避免的节奏问题'),F('一句页面设计规则','',true)]]];
+const screen=[
+ ['基本信息','先判断这一屏在整页里的职责。',[F('品牌/店铺'),F('产品类别'),F('它位于详情页哪个阶段','开头/中段/收尾'),F('本屏核心目的','吸引、解释、证明、促单？'),F('用户此时最需要解决的疑问'),F('这一屏的主题句','用一句话概括',true)]],
+ ['卖点提炼','一屏只能有一个真正焦点。',[F('核心卖点'),F('辅助卖点'),F('技术/功能原话'),F('对应的用户感受'),F('标题如何翻译卖点'),F('一句用户语言','例如：雾更细腻，清洁更彻底',true)]],
+ ['卖点逻辑链','从抓眼到购买，每一步都要有位置。',[F('兴奋点（抓眼）'),F('认同点（我需要）'),F('信任点（凭什么）'),F('转化点（值得买）'),F('缺失的一环'),F('本屏逻辑链','用“→”串起来',true)]],
+ ['视觉表现','所有元素是否都在替卖点说话？',[F('主体物'),F('辅助画面元素'),F('标题/副标题/数据层级'),F('颜色与光效'),F('风格传达的感受'),F('最能证明卖点的视觉证据','明确到画面物',true)]],
+ ['细节可视化策略','选择最该做强的 1–2 类证据。',[F('功能可视化','剖面、轨迹、动态、微距等'),F('场景可视化','人物/使用环境'),F('情绪可视化','安心、轻松、高级等'),F('差异可视化','对比、尺寸、前后变化'),F('最有效的一项'),F('还可以增加的证据','不改变核心卖点',true)]],
+ ['转化与收获','收住画面，并把方法带走。',[F('本屏如何承接下一屏'),F('怎样加深记忆'),F('我会做的一条优化'),F('最值得借鉴'),F('需要避免'),F('我的一句可复用规则','',true)]]];
+const shop=[
+ ['基本信息','先把店铺放回真实的经营语境。',[F('品牌／店铺','提示：判断它是品牌店、集合店还是活动店'),F('主营产品结构','提示：写主品类＋延伸品类，不只写一个产品'),F('目标人群','提示：谁在逛店、谁付款、谁送礼？'),F('用户进店场景','提示：首次浏览、搜索商品、冲活动还是回购？'),F('价格与风格定位','提示：从价格、商品和画面判断平价／礼物感／品牌感'),F('第一眼看到的内容','提示：说清店招、KV、商品、优惠等的位置与大小',true)]],
+ ['整体框架','先还原一家店从“看见”到“开始逛”的秩序。',[F('首屏主体','提示：店招、主 KV、商品或活动，谁是真正视觉中心？'),F('主 KV 主题','提示：它推大促、上新、节日、品类还是品牌定位？'),F('核心文案','提示：写主标题大意；它说的是利益、价值还是身份？'),F('导航／分类入口','提示：按年龄、用途、IP、品类还是活动分流？'),F('页面视觉动线','提示：先看什么 → 再点什么 → 最后进入哪个商品组'),F('首屏内容比例','提示：KV、导航、商品、促销信息谁压住了谁？',true)]],
+ ['店铺卖点逻辑','找“为什么值得逛这家店”，而不是某个单品的卖点。',[F('店铺级核心卖点','提示：例如品类齐全、送礼省心、低幼启蒙专业'),F('当前主推卖点','提示：本期首屏真正主推的主题、活动或系列'),F('画面怎样证明它','提示：通过商品组合、场景、价格、分类或销量证明'),F('辅助卖点／情绪','提示：安心、省心、好送礼、孩子喜欢等'),F('信任元素','提示：品牌、销量、评价、官方、售后在哪里出现'),F('最可能被忽略的信息','提示：活动门槛、商品范围或下一步入口是否不清楚',true)]],
+ ['视觉表现','所有视觉设计都要服务“认店、看懂、想逛”。',[F('店招与主 KV 的关系','提示：店招负责身份，KV负责主题；两者是否抢重点？'),F('主色与点缀色','提示：分别服务品牌识别、楼层区分还是活动强调？'),F('视觉焦点怎样形成','提示：用大小、位置、色彩、光影、留白说明'),F('文案层级','提示：品牌、活动、利益点、价格、按钮谁最先读？'),F('模块节奏','提示：大图、小图、商品卡、留白之间是否有呼吸？'),F('最有效的一处视觉设计','提示：指出具体模块，并解释它如何既好看又清楚',true)]],
+ ['导购与转化思维','店铺首页的任务是把人送进正确的商品路径。',[F('首屏想促使用户做什么','提示：领券、进会场、看爆款、按分类逛还是下单？'),F('用户实际最可能点哪里','提示：按视觉优先级判断，不是按你的主观愿望'),F('商品路径是否顺畅','提示：KV → 分类／商品组 → 单品详情有没有断点？'),F('爆款／新品／套装如何分工','提示：它们位置是否符合引流、提高客单或推新的任务？'),F('复访／关注理由','提示：上新、系列、会员礼、关注礼是否自然出现？'),F('我会优先优化的一处','提示：只选一个最影响逛店或购买的问题，写成动作',true)]],
+ ['我的收获','记录可实际迁移的店铺方法，不必写成口号。',[F('值得借鉴的店铺结构','提示：例如先用主题 KV 定方向，再用分类入口分流'),F('值得借鉴的商品组织','提示：具体记录爆款、新品、套装或分类组的安排'),F('我能迁移的视觉做法','提示：写成“下次我会……”，并说明用在哪里'),F('需要避免的问题','提示：如活动压过商品、导航过多、KV不知卖什么'),F('下次要验证的点','提示：记录仍不确定的导购或排版判断',true)]]
+];
+const kv=[
+ ['基本信息','先确认这张主 KV 在店铺首页承担什么任务。',[F('品牌／店铺','提示：KV 属于哪家店，它的长期定位是什么？'),F('主营品类','提示：写清主 KV 服务的商品或品类范围'),F('目标人群','提示：谁会被这张 KV 吸引并点击？'),F('当前主题／时机','提示：大促、上新、节日、换季还是常规品牌展示？'),F('KV 核心目的','提示：建立品牌、推活动、导向品类还是导向单品？'),F('第一眼看到的焦点','提示：描述人物、商品、IP、标题或利益点的位置',true)]],
+ ['整体框架','先还原一张店铺头图内部的阅读顺序。',[F('主视觉主体','提示：商品、人物、场景、IP或大标题，谁占最大面积？'),F('主文案','提示：原文或大意；它是否清楚讲出本期主题？'),F('次文案／活动规则','提示：它补充利益点、时间、门槛还是产品范围？'),F('主推商品／品类','提示：KV里具体展示了什么，是否与文字对应？'),F('导向入口','提示：用户看完应点击什么：会场、分类、爆款还是新品？'),F('留白与信息比例','提示：空白留给标题还是商品？是否有清晰呼吸区？',true)]],
+ ['卖点逻辑','一张 KV 必须给出一个明确的“为什么现在要逛”。',[F('唯一核心主题','提示：用用户语言写，不堆叠多项活动'),F('画面怎样证明主题','提示：商品组合、场景、价格、人物或符号如何证明？'),F('用户即时利益','提示：能省钱、发现新品、送礼省心还是获得情绪价值？'),F('辅助卖点／情绪','提示：童趣、节日感、专业感、温暖感增加了什么？'),F('品牌信任怎样出现','提示：Logo、系列感、销量、官方感是否自然出现？'),F('最容易被忽略的信息','提示：活动范围、点击方向或利益点哪里不够清楚？',true)]],
+ ['视觉表现','把“有氛围”拆成可以看见的视觉动作。',[F('商品／人物的质感','提示：边缘、光影、材质、距离是否支持品质感？'),F('主色与点缀色','提示：颜色是在制造主题，还是让信息更难读？'),F('对比来源','提示：大小、明暗、冷暖、饱和度如何拉出焦点？'),F('文案层级','提示：标题、利益点、活动细则、按钮谁最先读？'),F('构图方式','提示：居中、左右、对角、人物视线、留白如何组织？'),F('最有效的一处设计','提示：指定位置，并说明它怎样强化主题与点击动机',true)]],
+ ['导购与转化思维','KV不是海报终点，而是逛店路径的起点。',[F('KV 想促使用户做什么','提示：点击会场、领券、进品类、看新品还是直接买？'),F('最强点击理由','提示：用户为什么现在就要点，而不是往下滑？'),F('点击后的期待','提示：用户会期待看到哪类商品或哪种活动承接？'),F('与店铺首页是否一致','提示：点进去后，主题、色彩和商品是否接得住？'),F('转化链路是否有断点','提示：哪里会让用户看不懂、找不到或失去兴趣？'),F('如果我来优化','提示：只给一条最重要的修改动作，服务同一主题',true)]],
+ ['我的收获','记录可迁移的 KV 方法，而不是抽象评价。',[F('值得借鉴的主题组织','提示：活动、商品与文案是怎样被收束成一个主题的？'),F('可复用的视觉证据','提示：记录商品组合、场景、色块、人物或利益点做法'),F('下次我会怎样安排 KV','提示：写成具体动作，例如先定导向入口再排标题'),F('需要避免','提示：如画面漂亮但主题模糊、文字抢商品、导向不明'),F('下次要验证的点','提示：记录需要寻找案例或继续练习的方向',true)]]
+];
+const sprint=[
+ ['核心拆解结论（10 分钟极速版）','按顺序写完这三行：先抓亮点，再找到真正扣分点，最后只动最关键的一刀。',[F('产品名／品牌','例如：倍轻松护眼仪'),F('1｜视觉亮点','提示：写出最直接的可视化亮点；说明颜色、光影、视角或构图怎样服务核心卖点',true),F('2｜潜在扣分点','提示：不要只说“不好看”；找对比不足、信息打架、层级不清、呼吸感不够等具体问题',true),F('3｜如果我改第一刀','提示：只给一个优先级最高的动作，说明改哪里、怎样改、它解决什么问题',true)]]
+];
+const modes={hero:{name:'主图第 1 张',desc:'从产品信息到点击动机，练出“第一眼应该看什么”的判断。',qs:hero}
+,detail:{name:'详情页整体',desc:'把一张长详情页读成完整的说服过程：吸引、证明、代入、信任、促单。',qs:detail}
+,screen:{name:'详情页单屏',desc:'围绕一个卖点，拆清“抓眼—认同—相信—想买”的完整过程。',qs:screen}
+,shop:{name:'店铺首页',desc:'从店招、主 KV、分类到商品路径，拆解一家店如何让人愿意逛下去。',qs:shop}
+,kv:{name:'店铺主 KV',desc:'可从整页截图裁切首屏主视觉，拆解它如何定主题、给利益并导向下一步。',qs:kv}
+,sprint:{name:'10 分钟极速拆解',desc:'限时写三行：视觉亮点、潜在扣分点、如果我改第一刀。完成比写得长更重要。',qs:sprint}
+}
+;
+let mode='hero',index=0,answers=[],image='',sourceImage='',current=null,cropState=null,sprintEnd=0,sprintTick=null;const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s),key='aestheticTrainingV2';const logs=()=>JSON.parse(localStorage.getItem(key)||'[]');const save=x=>localStorage.setItem(key,JSON.stringify(x.slice(0,20)));function show(id){['home','train','complete','notes','review'].forEach(x=>$('#'+x).classList.toggle('hidden',x!==id));if(id==='home')history();if(id==='notes')notes();scrollTo({top:0,behavior:'smooth'}
+)}
+function total(){let n=logs().reduce((a,x)=>a+x.answers.length,0);$('#total').textContent=n+' 题';$('#totalbar').style.width=Math.min(100,n*5)+'%'}
+function dropHTML(){return '<div class="dropcopy"><div>↧</div><b>把图片拖到这里</b><small>也可以点击选择 JPG、PNG、WEBP<br>图片只保留在当前浏览器的训练档案中</small><label class="select">选择图片<input type="file" id="file" accept="image/*"></label></div>'}
+function stopSprintTimer(){if(sprintTick)clearInterval(sprintTick);sprintTick=null;sprintEnd=0;$('#sprintTimer').classList.add('hidden')}
+function updateSprintTimer(){let left=Math.max(0,sprintEnd-Date.now()),sec=Math.ceil(left/1000),m=Math.floor(sec/60),s=sec%60;$('#sprintClock').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(!left){clearInterval(sprintTick);sprintTick=null;$('#sprintTimer').classList.add('crop-ready');alert('10 分钟已到。现在提交，看看你的判断最需要补齐什么。')}}
+function startSprintTimer(){stopSprintTimer();sprintEnd=Date.now()+600000;$('#sprintTimer').classList.remove('hidden','crop-ready');updateSprintTimer();sprintTick=setInterval(updateSprintTimer,1000)}
+function start(m){mode=m;index=0;answers=[];image='';sourceImage='';document.body.classList.toggle('sprint-active',m==='sprint');if(m==='sprint')startSprintTimer();else stopSprintTimer();$('#modeName').textContent=({hero:'FIRST HERO IMAGE',detail:'DETAIL PAGE OVERVIEW',screen:'DETAIL PAGE SINGLE SCREEN',shop:'SHOP HOME PAGE',kv:'SHOP MAIN KV',sprint:'10-MINUTE SPRINT'})[m];$('#trainTitle').textContent=modes[m].name+'拆解';$('#trainDesc').textContent=modes[m].desc;$('#drop').innerHTML=dropHTML();$('#crop').disabled=true;$('#crop').textContent='裁切截图';$('#cropPanel').classList.add('hidden');$('#drop').classList.remove('hidden');show('train');render()}
+function render(){let q=modes[mode].qs[index],all=modes[mode].qs;$('#crumb').textContent=String(index+1).padStart(2,'0')+' / '+String(all.length).padStart(2,'0');$('#qtitle').textContent=q[0];$('#qhint').textContent=q[1];$('#round').textContent=(index+1)+' / '+all.length;$('#roundbar').style.width=((index+1)/all.length*100)+'%';$('#steps').innerHTML=all.map((x,i)=>'<span class="step '+(i===index?'on':'')+'">'+(i+1)+' · '+x[0]+'</span>').join('');$('#remind').textContent=hint(q[0]);$('#fields').innerHTML=q[2].map((f,i)=>'<div class="field '+(f[2]?'full':'')+'"><label for="f'+i+'">'+f[0]+'</label>'+(f[2]?'<textarea id="f'+i+'" placeholder="'+(f[1]||'填写你的观察')+'"></textarea>':'<input id="f'+i+'" placeholder="'+(f[1]||'填写')+'">')+'</div>').join('');$('#result').classList.add('hidden');current=null}
+function hint(t){return ({'基本信息':'把产品、人群和场景写具体；这是之后一切判断的语境。','整体框架':'先说“看见顺序”，再说好不好看。','卖点逻辑':'参数不是卖点；用户得到的利益才是卖点。','视觉表现':'少用“高级、好看”，换成颜色、光影、大小、位置等可见证据。','转化思维':'每一屏都在回答一个购买问题。','我的收获':'把总结改写成下一次可以执行的动作。','卖点提炼':'一屏只允许一个唯一焦点。','卖点逻辑链':'抓眼、认同、相信、转化要环环相扣。','细节可视化策略':'选择 1–2 类视觉证据重点做强，比所有方法浅尝更有效。','转化与收获':'改善建议必须服务同一核心卖点。'}
+)[t]||'描述你在画面中看见的事实，再给出理由。'}
+async function coach(kind,question=''){let res=await fetch('/api/coach',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({kind,mode:modes[mode].name,section:current.title,fields:current.fields,image:image&&image.length<4500000?image:'',question})});let data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.error||'GPT 暂时无法完成这次分析。');return data}
+async function roundCoach(record){let res=await fetch('/api/coach',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({kind:'roundup',mode:record.name,answers:record.answers,image:record.image&&record.image.length<4500000?record.image:''})});let data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.error||'GPT 暂时无法完成整轮复盘。');return data}
+function originalReply(a){return a.fields.filter(x=>x.value).map(x=>x.label+'：'+x.value).join('\n')||'本题没有填写内容。'}
+function renderMetaReview(meta){let box=$('#metaReview');if(!meta||!Array.isArray(meta.weaknesses)||!meta.weaknesses.length){box.innerHTML='<div class="meta-loading">GPT 正在从整轮作答中比对观察广度、原图依据和转化逻辑…</div>';return}box.innerHTML=meta.weaknesses.slice(0,3).map((w,i)=>{let a=answers[Math.max(0,Math.min(answers.length-1,Number(w.section_index)||0))]||answers[0];return '<article class="meta-card"><h5>优先整改 '+(i+1)+' · '+esc(a.title)+'</h5><p><b>我的原回答</b>\n'+esc(originalReply(a))+'</p><p><b>最需要整改的原因</b>\n'+esc(w.reason||'这部分仍需要补足画面依据与完整的判断链。')+'</p><p><b>下次怎么观察</b>\n'+esc(w.action||'先写出可见事实，再解释它怎样服务用户与转化。')+'</p></article>'}).join('')}
+function lights(level){return ['绿灯','黄灯','红灯'].map(x=>'<span class="light '+(x==='绿灯'?'green':x==='黄灯'?'yellow':'red')+'">'+(x===level?'● ':'○ ')+x+'</span>').join('')}
+async function submit(){let q=modes[mode].qs[index],fields=q[2].map((f,i)=>({label:f[0],value:$('#f'+i).value.trim()})),n=fields.filter(x=>x.value).length;if(!n){alert('至少先填写一项观察，再提交这一题。');return}let level=n/fields.length>.8?'绿灯':n/fields.length>.45?'黄灯':'红灯';current={title:q[0],fields,level};$('#result').classList.remove('hidden');$('#submit').disabled=true;$('#badge').textContent='GPT 正在看图';$('#scoretext').textContent='正在依据原图与本题填写生成参考解析…';$('#lights').innerHTML=lights(level);$('#aifeedback').classList.add('loading');$('#aifeedback').textContent='GPT 正在核对画面证据、你的判断与电商转化逻辑。';try{let r=await coach('analysis');current.ai=r.reference||r.analysis||'';current.aiSummary=r.summary||'';current.reuse=r.reusable_note||'';current.level=r.level||level;$('#badge').textContent='GPT 参考解析';$('#scoretext').textContent=r.summary||'已完成原图与作答的对照。';$('#lights').innerHTML=lights(current.level);$('#aifeedback').textContent=current.ai||'GPT 已完成分析，但没有返回可展示的解析。'}catch(e){current.ai='GPT 本次未能生成解析：'+e.message;$('#badge').textContent='GPT 暂不可用';$('#scoretext').textContent='本题已保存；待模型恢复后可重新训练并获得参考解析。';$('#aifeedback').textContent=current.ai}finally{$('#aifeedback').classList.remove('loading');$('#submit').disabled=false;setTimeout(()=>$('#freeq').focus(),120)}}
+async function next(){if(!current)return;let q=$('#freeq').value.trim();if(q&&!current.questionAnswer){$('#next').disabled=true;$('#questionAnswer').classList.remove('hidden');$('#questionAnswer').textContent='GPT 正在回答你的问题…';try{let r=await coach('question',q);current.questionAnswer=r.answer||r.analysis||'GPT 没有返回可展示的答复。';$('#questionAnswer').textContent='GPT 解答：\n'+current.questionAnswer}catch(e){current.questionAnswer='GPT 本次未能回答：'+e.message;$('#questionAnswer').textContent=current.questionAnswer}finally{$('#next').disabled=false}}current.question=q;answers[index]=current;if(index<modes[mode].qs.length-1){index++;render()}else await finish()}
+async function finish(){if(mode==='sprint')stopSprintTimer();let record={id:Date.now(),name:modes[mode].name,date:new Date().toLocaleString('zh-CN'),image,sourceImage,answers};let h=logs();h.unshift(record);save(h);total();let best=answers.find(x=>x.level==='绿灯')||answers[0],weak=answers.find(x=>x.level!=='绿灯');$('#completeText').textContent=mode==='sprint'?'你在 10 分钟内完成了核心判断。重点不是一次写全，而是让“亮点—问题—第一刀”形成条件反射。':'你完成了 '+answers.length+' 个版块。现在请把注意力放在最能提高拆解能力的三个盲区，而不是只看写得最多的部分。';$('#reuse').textContent=best.fields.filter(x=>x.value).slice(0,2).map(x=>'· '+x.label+'：'+x.value).join('\n');$('#nexttip').textContent=weak?'回看「'+weak.title+'」：把每一个判断都补上原图中实际存在的视觉证据。':'下一轮尝试：先写“我看见了什么”，再写“这意味着什么”。';$('#latest').onclick=()=>open(record.id);show('complete');if(mode==='sprint'){$('#metaReview').innerHTML='<div class="meta-loading">极速拆解只练一个动作：先说清可见亮点，再指出一个真正影响阅读的扣分点，最后只动优先级最高的一刀。</div>';return}renderMetaReview(null);try{record.metaReview=await roundCoach(record);save(h);renderMetaReview(record.metaReview)}catch(e){$('#metaReview').innerHTML='<div class="meta-loading">本轮作答已保存；GPT 暂时无法完成盲区复盘：'+esc(e.message)+'</div>'}}
+function history(){let h=logs(),box=$('#history');if(!h.length){box.className='empty';box.innerHTML='<div>◎</div>还没有训练档案。完成一轮后，这里可以打开查看整张总结页。';return}
+box.className='';box.innerHTML=h.map(x=>'<div class="record"><div><b>'+x.name+'</b><span>'+x.date+' · '+x.answers.length+' 个版块</span></div><button data-open="'+x.id+'">打开总结页</button></div>').join('');$$('[data-open]').forEach(b=>b.onclick=()=>open(+b.dataset.open))}
+function esc(v){return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function metaReviewMarkup(r){if(!r.metaReview||!Array.isArray(r.metaReview.weaknesses)||!r.metaReview.weaknesses.length)return'';return '<section class="meta-review"><h4>拆解盲区复盘</h4><p>'+esc(r.metaReview.overall||'优先补齐下面三个视角。')+'</p><div class="meta-list">'+r.metaReview.weaknesses.map((w,i)=>{let a=r.answers[Math.max(0,Math.min(r.answers.length-1,Number(w.section_index)||0))]||r.answers[0];return '<article class="meta-card"><h5>优先整改 '+(i+1)+' · '+esc(a.title)+'</h5><p><b>我的原回答</b>\n'+esc(originalReply(a))+'</p><p><b>最需要整改的原因</b>\n'+esc(w.reason)+'</p><p><b>下次怎么观察</b>\n'+esc(w.action)+'</p></article>'}).join('')+'</div></section>'}
+function open(id){let r=logs().find(x=>x.id===id);if(!r)return;let raw=r.sourceImage||r.image;let original=raw?'<div class="original"><b>上传的原截图</b><img src="'+raw+'" alt="训练原截图"></div>':'<div class="original"><b>本次训练未保留原图</b></div>';if(r.sourceImage&&r.image&&r.sourceImage!==r.image)original+='<div class="original"><b>实际用于分析的裁切区域</b><img src="'+r.image+'" alt="裁切训练图"></div>';let list=r.answers.map(a=>'<section class="summary"><h4>'+esc(a.title)+' · '+esc(a.level)+'</h4><div class="mine">'+a.fields.filter(x=>x.value).map(x=>esc(x.label)+'：'+esc(x.value)).join('\n')+'</div><div class="ai"><b>GPT 参考解析</b>\n'+esc(a.ai||'本题没有获得 GPT 解析。')+'</div>'+(a.question?'<div class="questionnote">我的疑问：'+esc(a.question)+(a.questionAnswer?'\n\nGPT 解答：'+esc(a.questionAnswer):'')+'</div>':'')+'</section>').join('');$('#archive').innerHTML='<div class="reviewtop"><div><div class="eyebrow">TRAINING ARCHIVE</div><h3>'+esc(r.name)+'总结页</h3><p>'+esc(r.date)+' · 黑字是我的回复；紫红色区域是 GPT 结合原图给出的解析与答疑。</p></div><button class="textbtn" id="back">返回档案</button></div>'+original+metaReviewMarkup(r)+list;$('#back').onclick=()=>show('home');show('review')}
+function notes(){let a=logs().flatMap(r=>r.answers.map(x=>({...x,name:r.name}))).filter(x=>x.question||x.reuse||x.level==='绿灯');$('#notelist').innerHTML=a.length?a.map(x=>'<article class="note '+(x.question?'purple':'orange')+'"><h4>'+esc(x.name)+' · '+esc(x.title)+'</h4><p>'+(x.reuse?'GPT 可复用经验：\n'+esc(x.reuse):x.level==='绿灯'?'可复用经验：\n'+x.fields.filter(f=>f.value).slice(0,2).map(f=>esc(f.label)+'：'+esc(f.value)).join('\n'):'')+(x.question?'\n\n我的疑问：\n'+esc(x.question)+'\n\nGPT 解答：\n'+esc(x.questionAnswer||'本次未获得答复。'):'')+'</p></article>').join(''):'<article class="note orange"><h4>笔记本还在等第一条经验</h4><p>完成一轮训练，GPT 提炼出的经验和你留下的疑问都会沉淀在这里。</p></article>'}
+function showWorkingImage(){if(!image){$('#drop').innerHTML=dropHTML();$('#crop').disabled=true;return}$('#drop').innerHTML='<img src="'+image+'" alt="上传的训练图">';$('#crop').disabled=false;$('#crop').textContent=image===sourceImage?'裁切截图':'重新裁切'}
+function load(f){if(!f||!f.type.startsWith('image/'))return;let r=new FileReader();r.onload=e=>{sourceImage=e.target.result;image=sourceImage;$('#cropPanel').classList.add('hidden');$('#drop').classList.remove('hidden');showWorkingImage()};r.readAsDataURL(f)}
+function cropPoint(e){let rect=$('#cropCanvas').getBoundingClientRect();return{x:(e.clientX-rect.left)*$('#cropCanvas').width/rect.width,y:(e.clientY-rect.top)*$('#cropCanvas').height/rect.height}}
+function drawCrop(){let c=$('#cropCanvas'),s=cropState;if(!s)return;let ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);ctx.drawImage(s.img,0,0,c.width,c.height);ctx.fillStyle='rgba(35,24,39,.56)';ctx.fillRect(0,0,c.width,c.height);ctx.clearRect(s.x,s.y,s.w,s.h);ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.setLineDash([8,5]);ctx.strokeRect(s.x,s.y,s.w,s.h);ctx.setLineDash([]);ctx.fillStyle='rgba(112,81,183,.88)';ctx.fillRect(s.x,s.y,Math.min(155,s.w),27);ctx.fillStyle='#fff';ctx.font='13px sans-serif';ctx.fillText('拖拽框选要分析的区域',s.x+8,s.y+18)}
+function openCrop(){if(!sourceImage)return;let img=new Image();img.onload=()=>{let c=$('#cropCanvas'),maxW=900,maxH=620,scale=Math.min(maxW/img.width,maxH/img.height,1);c.width=Math.max(1,Math.round(img.width*scale));c.height=Math.max(1,Math.round(img.height*scale));let w=c.width*.8,h=Math.min(c.height*.6,c.width*.55);cropState={img,x:(c.width-w)/2,y:(c.height-h)/2,w,h,drag:null};drawCrop();$('#drop').classList.add('hidden');$('#cropPanel').classList.remove('hidden')};img.src=sourceImage}
+function applyCrop(){let s=cropState;if(!s||s.w<20||s.h<20){alert('请先拖拽框选一个有效区域。');return}let c=$('#cropCanvas'),ratio=s.img.width/c.width,sw=s.w*ratio,sh=s.h*ratio,limit=1600,scale=Math.min(1,limit/Math.max(sw,sh)),out=document.createElement('canvas');out.width=Math.max(1,Math.round(sw*scale));out.height=Math.max(1,Math.round(sh*scale));out.getContext('2d').drawImage(s.img,s.x*ratio,s.y*ratio,sw,sh,0,0,out.width,out.height);image=out.toDataURL('image/jpeg',.92);$('#cropPanel').classList.add('hidden');$('#drop').classList.remove('hidden');showWorkingImage()}
+function cancelCrop(){$('#cropPanel').classList.add('hidden');$('#drop').classList.remove('hidden')}
+$('#cropCanvas').addEventListener('pointerdown',e=>{if(!cropState)return;let p=cropPoint(e);cropState.drag={x:p.x,y:p.y};cropState.x=p.x;cropState.y=p.y;cropState.w=0;cropState.h=0;$('#cropCanvas').setPointerCapture(e.pointerId);drawCrop()});$('#cropCanvas').addEventListener('pointermove',e=>{let s=cropState;if(!s||!s.drag)return;let p=cropPoint(e);s.x=Math.min(s.drag.x,p.x);s.y=Math.min(s.drag.y,p.y);s.w=Math.abs(p.x-s.drag.x);s.h=Math.abs(p.y-s.drag.y);drawCrop()});$('#cropCanvas').addEventListener('pointerup',e=>{if(cropState)cropState.drag=null;drawCrop()})
+$('#drop').addEventListener('dragover',e=>{e.preventDefault();$('#drop').classList.add('drag')}
+);$('#drop').addEventListener('dragleave',()=>$('#drop').classList.remove('drag'));$('#drop').addEventListener('drop',e=>{e.preventDefault();$('#drop').classList.remove('drag');load(e.dataTransfer.files[0])}
+);document.addEventListener('change',e=>{if(e.target.id==='file')load(e.target.files[0])}
+);$('#crop').onclick=openCrop;$('#useCrop').onclick=applyCrop;$('#cancelCrop').onclick=cancelCrop;$('#change').onclick=()=>{image='';sourceImage='';$('#cropPanel').classList.add('hidden');$('#drop').classList.remove('hidden');showWorkingImage()}
+;$('#submit').onclick=submit;$('#next').onclick=next;document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!$('#train').classList.contains('hidden')&&$('#result').classList.contains('hidden')&&document.activeElement.tagName!=='TEXTAREA'){e.preventDefault();submit()}
+if(e.key==='Enter'&&!e.shiftKey&&!$('#train').classList.contains('hidden')&&!$('#result').classList.contains('hidden')&&document.activeElement.id!=='freeq'){e.preventDefault();next()}
+}
+);$$('[data-mode]').forEach(b=>b.onclick=()=>start(b.dataset.mode));$$('[data-go]').forEach(b=>b.onclick=()=>show(b.dataset.go==='records'?'home':b.dataset.go));$('#clear').onclick=()=>{if(confirm('确定清空当前浏览器内的训练档案吗？')){localStorage.removeItem(key);history();total()}
+}
+;$('#again').onclick=()=>start(mode);$('#gohome').onclick=()=>show('home');total();history();
+</script></body></html>
