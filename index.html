@@ -227,8 +227,23 @@
     .archive-tile:nth-child(3) .tile-icon { color:var(--orange); background:#fff; }
     .archive-tile small { display:block; overflow:hidden; color:#4d4d4d; font-size:10px; text-overflow:ellipsis; white-space:nowrap; }
     .dash-boundary { margin:0; padding:12px; border:2px solid var(--line); border-left:7px solid var(--orange); background:#fff8f3; font-size:12px; }
+    .skill-overview { display:grid; grid-template-columns:auto minmax(0,1fr) minmax(240px,.8fr); gap:17px; align-items:center; margin-bottom:18px; }
+    .skill-stamp { display:grid; place-items:center; width:72px; height:72px; color:#fff; background:var(--ink); border:2px solid var(--ink); box-shadow:4px 4px 0 var(--orange); font:15px/1.2 var(--pixel); text-align:center; }
+    .skill-copy h2 { margin-bottom:5px; }
+    .skill-copy p { margin:0; color:#626262; }
+    .skill-content-map { display:flex; flex-wrap:wrap; gap:6px; align-content:center; padding:10px; border-left:2px solid var(--line); }
+    .skill-content-map span { padding:4px 6px; border:1px solid var(--line); background:#fff; font:10px var(--pixel); }
+    .skill-content-map .speed { color:#fff; border-color:#167f9d; background:#167f9d; }
+    .training-section-title { display:flex; justify-content:space-between; align-items:end; gap:14px; margin:22px 0 12px; }
+    .training-section-title h2 { margin:0; }
+    .training-section-title p { margin:0; color:#686868; font-size:12px; }
+    .train-card { position:relative; }
+    .train-card .train-type { display:block; margin-bottom:7px; color:#666; font:9px var(--pixel); letter-spacing:.06em; }
+    .train-card.speed { border-color:#167f9d; box-shadow:4px 4px 0 #b7dce5; }
+    .train-card.speed .train-symbol { background:#167f9d; border-color:#167f9d; }
+    .train-card.speed span:last-child { color:#167f9d; }
     @media (max-width:1050px) { .dash-core,.dash-lower { grid-template-columns:1fr; } .workboard-body { grid-template-columns:minmax(190px,.72fr) minmax(300px,1.28fr); } }
-    @media (max-width:760px) { .shell { display:block; } .sidebar { width:220px; } .dash-title { display:block; } .dash-title-meta { margin-top:13px; } .metric-rack { grid-template-columns:1fr 1fr; } .workboard-body { grid-template-columns:1fr; } .pixel-scene { border-right:0; border-bottom:2px solid var(--line); } .board-table { min-height:270px; } .mini-flow { grid-template-columns:1fr; } .mini-step,.mini-step:last-child { border-right:2px solid var(--line); border-bottom:0; } .mini-step:last-child { border-bottom:2px solid var(--line); } }
+    @media (max-width:760px) { .shell { display:block; } .sidebar { width:220px; } .dash-title { display:block; } .dash-title-meta { margin-top:13px; } .metric-rack { grid-template-columns:1fr 1fr; } .workboard-body { grid-template-columns:1fr; } .pixel-scene { border-right:0; border-bottom:2px solid var(--line); } .board-table { min-height:270px; } .mini-flow { grid-template-columns:1fr; } .mini-step,.mini-step:last-child { border-right:2px solid var(--line); border-bottom:0; } .mini-step:last-child { border-bottom:2px solid var(--line); } .skill-overview { grid-template-columns:1fr; } .skill-content-map { border-top:2px solid var(--line); border-left:0; } }
   </style>
 </head>
 <body>
@@ -238,7 +253,7 @@
       <nav>
         <div class="nav-label">WORKBENCH</div>
         <button class="nav-btn active" data-go="dashboard"><span class="pixel-icon">⌂</span><span class="nav-txt">总看板</span></button>
-        <button class="nav-btn" data-go="design"><span class="pixel-icon">◇</span><span class="nav-txt">设计</span></button>
+        <button class="nav-btn" data-go="design"><span class="pixel-icon">◇</span><span class="nav-txt">审美训练</span></button>
         <button class="nav-btn" data-go="english"><span class="pixel-icon">EN</span><span class="nav-txt">英语</span></button>
         <button class="nav-btn" data-go="writing"><span class="pixel-icon">文</span><span class="nav-txt">写作</span></button>
         <button class="nav-btn" data-go="vocal"><span class="pixel-icon">♫</span><span class="nav-txt">声乐</span></button>
@@ -256,13 +271,13 @@
         <div class="dashboard-v2">
           <div class="dash-title"><div><div class="eyebrow">TAB 0 / WORKBENCH</div><h1>你的个人工作台</h1><p class="lede">把设计判断、灵感、创作和未来的内容实验，收进一张清楚的编辑台。</p></div><div class="dash-title-meta"><span class="pixel-date">LOCAL · v0.2</span><button class="pixel-btn orange" data-go="growth">+ 快速记录</button></div></div>
           <div class="metric-rack">
-            <article class="metric orange"><span class="metric-icon">◇</span><div class="metric-copy"><span class="metric-label">设计训练</span><strong id="metricSessions">0</strong><small>本周累积档案</small></div></article>
+            <article class="metric orange"><span class="metric-icon">◇</span><div class="metric-copy"><span class="metric-label">审美训练</span><strong id="metricSessions">0</strong><small>本周累积档案</small></div></article>
             <article class="metric"><span class="metric-icon">+</span><div class="metric-copy"><span class="metric-label">成长清单</span><strong id="metricGrowth">0</strong><small>原话已安全保留</small></div></article>
             <article class="metric"><span class="metric-icon">?</span><div class="metric-copy"><span class="metric-label">等待拍板</span><strong id="metricDecisions">0</strong><small>留给你决定的事</small></div></article>
             <article class="metric"><span class="metric-icon">□</span><div class="metric-copy"><span class="metric-label">视频队列</span><strong id="metricQueue">0</strong><small>尚未调用外部服务</small></div></article>
           </div>
           <div class="dash-core">
-            <article class="card workboard"><div class="board-head"><h2>本周工作台 / CONTINUE</h2><div class="board-tabs"><span class="active">▦</span><span>☷</span><span>↗</span></div></div><div class="workboard-body"><div class="pixel-scene"><div class="scene-frame"><span class="scene-dots"></span><span class="scene-sun"></span><span class="scene-caption">VISUAL</span></div></div><div class="board-table"><div class="board-table-title"><span>继续推进</span><button class="small-btn" data-go="design">进入设计 TAB</button></div><div id="continueList"></div></div></div></article>
+            <article class="card workboard"><div class="board-head"><h2>本周工作台 / CONTINUE</h2><div class="board-tabs"><span class="active">▦</span><span>☷</span><span>↗</span></div></div><div class="workboard-body"><div class="pixel-scene"><div class="scene-frame"><span class="scene-dots"></span><span class="scene-sun"></span><span class="scene-caption">VISUAL</span></div></div><div class="board-table"><div class="board-table-title"><span>继续推进</span><button class="small-btn" data-go="design">进入审美训练</button></div><div id="continueList"></div></div></div></article>
             <aside class="card capture-panel"><div class="capture-head"><h2>今日捕捉 / CAPTURE</h2><span class="capture-dot"></span></div><div class="capture-note"><textarea aria-label="今日捕捉预览" placeholder="先写下来，不必组织好……"></textarea><div class="capture-status"><span>先放</span><span>AI 可做</span><span>等拍板</span></div><button class="pixel-btn orange" data-go="growth">打开成长清单 →</button></div></aside>
           </div>
           <div class="dash-lower">
@@ -274,14 +289,16 @@
       </section>
 
       <section class="page" id="page-design">
-        <div class="page-head"><div><div class="eyebrow">TAB 1 / DESIGN</div><h1>设计判断，不只看“好不好看”。</h1><p class="lede">为儿童图书与玩具电商主图设计而设：把光影、透视、营销意图和画面取舍，变成可以复盘的判断。</p></div></div>
+        <div class="page-head"><div><div class="eyebrow">SKILL 01 / AESTHETIC TRAINING</div><h1>审美训练</h1><p class="lede">这是一个完整的 Skill：围绕电商视觉判断，把不同画面类型收进同一条训练路径，而不是拆成多个独立模块。</p></div></div>
+        <article class="card skill-overview"><div class="skill-stamp">SKILL<br>01</div><div class="skill-copy"><h2>电商视觉判断</h2><p>练的是同一种底层能力：看懂画面第一信息、商品与卖点的关系，以及构图、光影、透视如何服务转化。</p></div><div class="skill-content-map"><span>主图</span><span>详情页</span><span>单屏</span><span class="speed">10 分钟</span><span>店铺首页</span><span>店铺 KV</span><span>店铺装修</span></div></article>
+        <div class="training-section-title"><div><h2>选择训练内容</h2><p>以下是「审美训练」内部的练习入口；完成后统一进入同一个训练档案。</p></div><span class="tag orange">统一 Skill</span></div>
         <div class="grid training-grid" id="trainingCards"></div>
         <div class="training-desk" id="trainingDesk">
           <div class="section-title"><h2 id="trainingTitle">开始训练</h2><button class="small-btn" id="closeTraining">收起</button></div>
           <div class="grid two-col"><article class="card"><div class="upload-zone" id="uploadZone"><div id="uploadHint"><div class="pixel-icon" style="margin:0 auto 12px;color:var(--orange)">↑</div><strong>上传一张训练参考图</strong><p style="margin:7px 0;color:#666;font-size:12px">支持拖入图片；仅保存在当前浏览器。</p><label class="pixel-btn orange">选择图片<input type="file" accept="image/*" id="imageInput"></label></div><img id="previewImage" hidden alt="训练参考图预览"></div></article><article class="card"><div class="eyebrow">STEP 01 — 04</div><h2>先写观察，再看参考答案。</h2><p style="color:#666;font-size:12px">未接 AI 的当前版本会提供固定的复盘框架，不对图片作自动判断。</p><form id="trainingForm" class="form-grid"><div class="field"><label>品牌 / 店铺 / 品类</label><input name="subject" placeholder="例如：儿童绘本礼盒"></div><div class="field"><label>画面第一眼在卖什么？</label><input name="hook" placeholder="例如：礼物感与陪伴感"></div><div class="field full"><label>光影、透视、构图分别在服务什么？</label><textarea name="structure" placeholder="写下你看到的视觉组织方式……"></textarea></div><div class="field full"><label>如果重做一版，你会优先改什么？</label><textarea name="change" placeholder="用你的专业直觉给出一个具体动作……"></textarea></div><div class="field full"><button class="pixel-btn orange" type="submit">完成并存入训练档案</button></div></form></article></div>
           <article class="reference"><strong>本地复盘提示</strong><p>先区分“吸引注意力的第一信息”与“支撑转化的第二信息”。之后依次检查：商品是否够清楚、情绪是否与品类一致、文字层级是否比装饰更有优先级。</p></article>
         </div>
-        <div class="section-title"><h2>训练档案</h2><span class="tag">保存在当前浏览器</span></div><article class="card"><div id="trainingArchive"></div></article>
+        <div class="section-title"><h2>审美训练档案</h2><span class="tag">保存在当前浏览器</span></div><article class="card"><div id="trainingArchive"></div></article>
       </section>
 
       <section class="page" id="page-english"><div class="page-head"><div><div class="eyebrow">TAB 2 / ENGLISH</div><h1>把英语变成工作与表达的工具。</h1><p class="lede">专八基础是底子；这里先为日常对话、设计表达和代码阅读留出入口。</p></div></div><article class="card placeholder"><div><div class="pixel-icon">EN</div><h2>学习模块准备中</h2><p>下一版可加入：每天一句口语、设计术语卡与代码英文注释阅读。</p><button class="pixel-btn" data-go="growth">先把学习想法记进成长清单</button></div></article></section>
@@ -311,9 +328,9 @@
     const read = key => { try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; } };
     const write = (key,value) => localStorage.setItem(key,JSON.stringify(value));
     const state = { growth:read(KEYS.growth), training:read(KEYS.training), queue:read(KEYS.queue), activeLibrary:'all', currentMode:null };
-    const titles = { dashboard:'TAB 0 / 总看板', design:'TAB 1 / 设计', english:'TAB 2 / 英语', writing:'TAB 3 / 写作', vocal:'TAB 4 / 声乐', growth:'TAB 5 / 成长清单', toolbox:'TAB 6 / 实用工具箱', library:'LIBRARY / 灵感库' };
+    const titles = { dashboard:'TAB 0 / 总看板', design:'SKILL 01 / 审美训练', english:'TAB 2 / 英语', writing:'TAB 3 / 写作', vocal:'TAB 4 / 声乐', growth:'TAB 5 / 成长清单', toolbox:'TAB 6 / 实用工具箱', library:'LIBRARY / 灵感库' };
     const modes = [
-      ['主图拆解','从商品、卖点与情绪的第一眼层级开始。','01'],['详情页整体','检查信息节奏、转场与购买理由的递进。','02'],['详情页单屏','聚焦一屏内的版式、视觉焦点与文案。','03'],['十分钟拆解','定时抓住最重要的三条判断。','10'],['店铺首页','训练货架感、品牌感和入口取舍。','05'],['主 KV','拆解活动主视觉的情绪与延展性。','KV'],['店铺装修','从单个页面回看整体体验。','07']
+      ['主图拆解','从商品、卖点与情绪的第一眼层级开始。','01',''],['详情页整体','检查信息节奏、转场与购买理由的递进。','02',''],['详情页单屏','聚焦一屏内的版式、视觉焦点与文案。','03',''],['十分钟拆解','定时抓住最重要的三条判断。','10','speed'],['店铺首页','训练货架感、品牌感和入口取舍。','05',''],['店铺主 KV','拆解活动主视觉的情绪与延展性。','KV',''],['店铺装修','从单个页面回看整体体验。','07','']
     ];
     const $ = s => document.querySelector(s);
     const esc = value => String(value || '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
@@ -325,8 +342,8 @@
     $('#menuBtn').addEventListener('click',()=>$('#sidebar').classList.toggle('open'));
     $('#exportBtn').addEventListener('click',()=>{ const data={exportedAt:new Date().toISOString(),growth:state.growth,training:state.training,toolboxQueue:state.queue}; const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'})); a.download='baixueye-workbench-records.json'; a.click(); URL.revokeObjectURL(a.href); toast('已导出当前浏览器里的记录。'); });
     function renderDashboard(){ $('#metricSessions').textContent=state.training.length; $('#metricGrowth').textContent=state.growth.length; $('#metricDecisions').textContent=state.growth.filter(x=>x.status==='等我拍板').length; $('#metricQueue').textContent=state.queue.length; const pending=state.growth.filter(x=>x.status==='等我拍板').slice(0,2); const latest=state.growth.slice(0,2); const items=[...pending.map(x=>({icon:'?',title:'等你拍板',sub:x.text,progress:78,date:'NOW',go:'growth'})),...state.queue.slice(0,2).map(x=>({icon:'□',title:'视频笔记队列',sub:x.source,progress:30,date:'QUEUE',go:'toolbox'}))]; const starter=[{icon:'◇',title:'完成一次审美训练',sub:'先选一张儿童电商参考图',progress:20,date:'START',go:'design'},{icon:'+',title:'留下一条成长清单',sub:'不用整理好，原话会被保留',progress:45,date:'CAPTURE',go:'growth'},{icon:'□',title:'收进一个视频任务',sub:'先验证自己真正需要处理什么',progress:12,date:'TOOL',go:'toolbox'}]; const display=items.length?items:starter; $('#continueList').innerHTML=display.map((x,i)=>`<button class="table-row" data-go="${x.go}" style="width:100%;background:transparent;border-left:0;border-right:0;border-bottom:0;text-align:left;cursor:pointer"><span class="table-check ${i===0?'done':''}"></span><span class="table-main"><strong>${esc(x.title)}</strong><small>${esc(x.sub)}</small></span><span class="table-progress"><span style="width:${x.progress}%"></span></span><span class="table-date">${esc(x.date)}</span></button>`).join(''); const activities=[...state.training.slice(0,3).map(x=>['◇','完成 '+x.mode,x.subject||'未填写训练对象',x.created]),...latest.map(x=>['+','收进成长清单',x.category,x.created]),...state.queue.slice(0,2).map(x=>['□','加入工具箱队列',x.platform+' · '+x.goal,x.created])].sort((a,b)=>new Date(b[3])-new Date(a[3])).slice(0,2); $('#activityList').innerHTML=activities.length?activities.map(x=>`<div class="list-row"><span class="list-icon">${x[0]}</span><div class="list-main"><strong>${esc(x[1])}</strong><small>${esc(x[2])}</small></div></div>`).join(''):'<div class="empty-state">从一条记录开始，活动会显示在这里。</div>'; }
-    function renderTraining(){ $('#trainingCards').innerHTML=modes.map(m=>`<button class="train-card" data-mode="${m[0]}"><span class="train-symbol">${m[2]}</span><h3>${m[0]}</h3><p>${m[1]}</p><span>开始这一项 →</span></button>`).join(''); document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>openTraining(b.dataset.mode))); const archive=state.training; $('#trainingArchive').innerHTML=archive.length?'<div class="list">'+archive.map(x=>`<div class="list-row"><span class="list-icon">◇</span><div class="list-main"><strong>${esc(x.mode)} · ${esc(x.subject||'未命名训练')}</strong><small>${new Date(x.created).toLocaleString('zh-CN')} · ${esc(x.hook||'已完成复盘')}</small></div><span class="tag green">已存档</span></div>`).join('')+'</div>':'<div class="empty-state">你还没有完成训练。选择上方任意模块开始即可。</div>'; }
-    function openTraining(mode){ state.currentMode=mode; $('#trainingTitle').textContent=mode+' · 训练台'; $('#trainingDesk').classList.add('open'); $('#trainingDesk').scrollIntoView({behavior:'smooth',block:'start'}); }
+    function renderTraining(){ $('#trainingCards').innerHTML=modes.map(m=>`<button class="train-card ${m[3]}" data-mode="${m[0]}"><span class="train-symbol">${m[2]}</span><span class="train-type">审美训练 · 内容</span><h3>${m[0]}</h3><p>${m[1]}</p><span>开始本次练习 →</span></button>`).join(''); document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>openTraining(b.dataset.mode))); const archive=state.training; $('#trainingArchive').innerHTML=archive.length?'<div class="list">'+archive.map(x=>`<div class="list-row"><span class="list-icon">◇</span><div class="list-main"><strong>${esc(x.mode)} · ${esc(x.subject||'未命名训练')}</strong><small>${new Date(x.created).toLocaleString('zh-CN')} · ${esc(x.hook||'已完成复盘')}</small></div><span class="tag green">已存档</span></div>`).join('')+'</div>':'<div class="empty-state">你还没有完成训练。选择上方任意训练内容开始即可。</div>'; }
+    function openTraining(mode){ state.currentMode=mode; $('#trainingTitle').textContent='审美训练 · '+mode; $('#trainingDesk').classList.add('open'); $('#trainingDesk').scrollIntoView({behavior:'smooth',block:'start'}); }
     $('#closeTraining').addEventListener('click',()=>$('#trainingDesk').classList.remove('open'));
     let imageData='';
     const zone=$('#uploadZone');
